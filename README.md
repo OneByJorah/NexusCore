@@ -120,7 +120,11 @@ cp .env.example .env          # Configure your services
 docker compose up -d          # Launch everything
 ```
 
-Open **http://localhost:3000** in your browser.
+Open **http://localhost:5173** (nginx) in your browser. HTTPS is available on **https://localhost:8443**.
+
+> **Note:** the dashboard UI actually served is the standalone HTML/JS app in
+> `frontend/index.html`. The `frontend/src/` React SPA is present but not yet
+> wired into the Vite entry point.
 
 ### Local Development
 
@@ -158,27 +162,30 @@ See `.env.example` for all available options.
 
 ```
 NexusCore/
-├── backend/                    # FastAPI application
-│   ├── main.py                 # Entry point
-│   ├── routers/                # API endpoint modules
-│   ├── services/               # Business logic & collectors
-│   └── models/                 # SQLAlchemy database models
-├── frontend/                   # React SPA dashboard
-│   ├── src/
-│   │   ├── pages/              # Dashboard pages
-│   │   └── components/         # Reusable React components
-│   └── package.json
-├── alembic/                    # Database migrations
-├── monitoring/                 # Prometheus, Grafana, Loki configs
-├── nginx/                      # Reverse proxy configs
-├── admin-service/              # Admin utilities
-├── agent/                      # Monitoring agents
-├── docs/                       # Documentation & assets
-├── scripts/                    # Utility scripts
-├── database/                   # DB init scripts
-├── systemd/                    # systemd service units
-├── docker-compose.yml          # Production deployment
-└── .env.example                # Configuration template
+├── backend/                      # FastAPI application
+│   ├── app/
+│   │   ├── main.py               # Entry point
+│   │   ├── routers/              # API endpoint modules
+│   │   ├── config.py             # Settings & DB-backed overrides
+│   │   ├── database.py           # SQLAlchemy engine/session
+│   │   ├── encryption.py         # Fernet settings encryption
+│   │   ├── models.py             # SQLAlchemy models
+│   │   └── schemas.py            # Pydantic schemas
+│   └── tests/                    # pytest suite
+├── frontend/                     # Dashboard UI
+│   ├── index.html                # Standalone NOC dashboard (vanilla JS, served UI)
+│   └── src/                      # React SPA sources (not wired into Vite entry yet)
+├── admin-service/                # Admin utilities service
+├── agent/                        # Monitoring agents (Windows)
+├── alembic/                      # Database migrations
+├── monitoring/                   # Prometheus, Loki, SNMP exporter configs
+├── nginx/                        # Reverse proxy configs
+├── docs/                         # Documentation, assets & screenshots
+├── scripts/                      # Utility scripts
+├── database/                     # DB init scripts
+├── systemd/                      # systemd service units
+├── docker-compose.yml            # Production deployment
+└── .env.example                  # Configuration template
 ```
 
 ---
@@ -187,13 +194,18 @@ NexusCore/
 
 | Endpoint | Method | Description |
 |---|---|---|
-| `/api/dashboard` | GET | NOC dashboard overview |
-| `/api/ad/replication` | GET | AD replication status |
-| `/api/ntp/status` | GET | NTP synchronization health |
-| `/api/dns/health` | GET | DNS resolution status |
+| `/api/dashboard/overview` | GET | NOC dashboard overview metrics |
+| `/api/dc_status` | GET | AD domain controller replication status |
+| `/api/dc/forcerepl` | POST | Force AD replication request |
+| `/api/ntp_status` | GET | NTP client synchronization health |
 | `/api/pbx/status` | GET | PBX service health |
-| `/api/tickets` | GET | Helpdesk ticket metrics |
-| `/api/ai/insights` | GET | AI-powered anomaly insights |
+| `/api/pbx/snmp/walk` | GET | Mitel SNMP walk results |
+| `/api/helpdesk/tickets` | GET/POST | Helpdesk ticket metrics (osTicket) |
+| `/api/wazuh/status` | GET | Wazuh SIEM connection status |
+| `/api/ollama/chat` | POST | AI-powered insights (Ollama) |
+| `/api/admin/users` | GET/POST | User administration (admin role) |
+| `/metrics` | GET | Prometheus metrics |
+| `/healthz` | GET | Liveness probe |
 
 ---
 

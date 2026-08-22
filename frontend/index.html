@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
 <title>NOC Operations Platform | v11.0</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC" crossorigin="anonymous"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap');
 
@@ -1323,7 +1324,7 @@ let dnsChart = null;
 let refreshTimers = {};
 const REFRESH_INTERVALS = { dc:60, ntp:60, logs:30, ubuntu:60, gsync:120, pbx:60 };
 
-function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;') }
 
 /* ════ TOASTS ════ */
 function toast(msg,type='info',ms=3200){
@@ -1509,7 +1510,7 @@ async function loadPBXSNMP() {
     const data = await r.json();
     const feed = document.getElementById('pbx-events');
     if (feed) {
-      feed.innerHTML = '<pre style="margin:0;white-space:pre-wrap">' + JSON.stringify(data, null, 2) + '</pre>';
+      feed.innerHTML = '<pre style="margin:0;white-space:pre-wrap">' + esc(JSON.stringify(data, null, 2)) + '</pre>';
     }
     if (el) el.textContent = 'SNMP walk loaded';
     addGlobalEvent('info', '📡', 'SNMP walk retrieved for Mitel PBX');
@@ -1530,13 +1531,13 @@ function renderPBXTable(data) {
     else if (status === 'critical') critical++;
     const statusClass = status === 'healthy' ? 'ok' : (status === 'degraded' ? 'warn' : 'err');
     return `<tr>
-      <td>${pbx.name || '-'}</td>
-      <td><code>${pbx.host || '-'}</code></td>
-      <td>${pbx.model || '-'}</td>
-      <td><span class="pdot ${statusClass}"></span> ${status}</td>
-      <td>${pbx.uptime_pct || 0}%</td>
-      <td>${pbx.active_calls || 0}</td>
-      <td><button class="btn-sm btn-s" onclick="showPBXDetails('${pbx.host}')">Details</button></td>
+      <td>${esc(pbx.name || '-')}</td>
+      <td><code>${esc(pbx.host || '-')}</code></td>
+      <td>${esc(pbx.model || '-')}</td>
+      <td><span class="pdot ${statusClass}"></span> ${esc(status)}</td>
+      <td>${esc(pbx.uptime_pct || 0)}%</td>
+      <td>${esc(pbx.active_calls || 0)}</td>
+      <td><button class="btn-sm btn-s" data-host="${esc(pbx.host)}" onclick="showPBXDetails(this.dataset.host)">Details</button></td>
     </tr>`;
   }).join('');
   document.getElementById('pbx-total').textContent = data.length;
@@ -1608,7 +1609,7 @@ function renderHelpdeskTickets(data){
   const tbody = document.getElementById('helpdesk-tbody');
   if (!tbody) return;
   const items = Array.isArray(data) ? data : (data && data.tickets ? data.tickets : []);
-  const rows = items.map(t => `<tr><td>${t.id || '--'}</td><td>${t.name || '--'}</td><td>${t.email || '--'}</td><td>${t.subject || '--'}</td><td>${t.status || '--'}</td><td>${t.created || '--'}</td></tr>`).join('');
+  const rows = items.map(t => `<tr><td>${esc(t.id || '--')}</td><td>${esc(t.name || '--')}</td><td>${esc(t.email || '--')}</td><td>${esc(t.subject || '--')}</td><td>${esc(t.status || '--')}</td><td>${esc(t.created || '--')}</td></tr>`).join('');
   tbody.innerHTML = rows || `<tr><td colspan="6" style="text-align:center;color:var(--dim);padding:24px">No tickets found.</td></tr>`;
 }
 function loadHelpdeskTicket(){
@@ -1635,7 +1636,7 @@ function renderFeed(feed){
   if(!el) return;
   if(!allEvents[feed].length){ el.innerHTML='<div class="evt-item"><span class="evt-msg" style="color:var(--dim)">No events</span></div>'; return; }
   el.innerHTML = allEvents[feed].slice(0,50).map(e=>
-    `<div class="evt-item ${e.level}"><span class="evt-icon">${e.icon}</span><span class="evt-time">${e.time}</span><span class="evt-msg">${e.msg}</span></div>`
+    `<div class="evt-item ${e.level}"><span class="evt-icon">${e.icon}</span><span class="evt-time">${e.time}</span><span class="evt-msg">${esc(e.msg)}</span></div>`
   ).join('');
 }
 
@@ -1778,11 +1779,10 @@ function forceReplAll(){
   const healthy=STATE.dc.data.filter(d=>d.Status==='OK'&&d.IPAddress);
   if(!healthy.length){toast('No healthy DCs found','err');return;}
   if(!confirm(`Force replication for all ${healthy.length} healthy DCs?`)) return;
-  const host=window.location.hostname;
   let done=0, errors=0;
   toast(`Sending replication to ${healthy.length} DCs…`,'warn',4000);
   healthy.forEach(dc=>{
-    fetch(`http://${window.location.hostname}/forcerepl`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({DCName:dc.DCName,IPAddress:dc.IPAddress})})
+    fetch(`${location.protocol}//${location.hostname}/forcerepl`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({DCName:dc.DCName,IPAddress:dc.IPAddress})})
     .then(r=>r.json()).then(r=>{ done++; if(!r.Success)errors++; if(done===healthy.length) toast(`✅ All ${done} done. Errors: ${errors}`, errors?'warn':'ok',5000); })
     .catch(()=>{ errors++; done++; if(done===healthy.length) toast('⚠️ API not running on :8080','err',6000); });
   });
@@ -1832,7 +1832,7 @@ function openDCModal(idx){
     <div class="modal-field"><span class="mf-lbl">Response</span><span class="mf-val">${esc(dc.ResponseTime||'N/A')}</span></div>
     <div class="modal-actions">
       ${dc.IPAddress?`<button class="btn-w" onclick="closeModal();openReplModal(${idx})">⚡ Force Replication</button>`:''}
-      <button onclick="aiAskAboutDC('${esc(dc.DCName)}')">🤖 Ask AI</button>
+      <button data-dc="${esc(dc.DCName)}" onclick="aiAskAboutDC(this.dataset.dc)">🤖 Ask AI</button>
       <button class="btn-s" onclick="closeModal()">Close</button>
     </div>
   `;
@@ -1865,7 +1865,7 @@ function confirmReplAPI(idx){
   if(btn) btn.disabled=true;
   box.className='repl-status-box visible running';
   box.textContent='⚡ Sending replication request…';
-  fetch(`http://${window.location.hostname}/forcerepl`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({DCName:dc.DCName,IPAddress:dc.IPAddress})})
+  fetch(`${location.protocol}//${location.hostname}/forcerepl`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({DCName:dc.DCName,IPAddress:dc.IPAddress})})
   .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
   .then(result=>{
     if(result.Success){ box.className='repl-status-box visible success'; box.textContent='✅ Replication triggered for '+dc.DCName+'\n\n'+(result.Output||'repadmin /syncall completed'); toast('Replication triggered','ok',4000); addEvent('dc','ok','⚡','Force replication → '+dc.DCName+' SUCCESS'); }
@@ -2021,8 +2021,8 @@ async function runDNSBenchmark(){
 
   dnsResults = [];
   const container = document.getElementById('dns-dc-cards');
-  container.innerHTML = dcs.map(dc=>`
-    <div class="dns-dc-card" id="dns-card-${dc.DCName}">
+  container.innerHTML = dcs.map((dc,i)=>`
+    <div class="dns-dc-card" id="dns-card-${i}">
       <div class="dns-name">${esc(dc.DCName)}</div>
       <div class="dns-ip">${esc(dc.IPAddress)} — ${esc(dc.Site||'')}</div>
       <div style="font-family:var(--mono);font-size:.72rem;color:var(--warn)" class="bench-running">Testing…</div>
@@ -2034,7 +2034,7 @@ async function runDNSBenchmark(){
 
   let tested=0, failed=0, totalMs=0, fastest=Infinity;
 
-  for(const dc of dcs){
+  for(const [dcIdx,dc] of dcs.entries()){
     const times=[];
     // We use fetch timing as a DNS proxy — measure latency to DC endpoint
     for(let i=0;i<count;i++){
@@ -2053,7 +2053,7 @@ async function runDNSBenchmark(){
     if(avg<fastest) fastest=avg;
     if(avg>=900) failed++;
 
-    const card=document.getElementById('dns-card-'+dc.DCName);
+    const card=document.getElementById('dns-card-'+dcIdx);
     if(card){
       const barPct=Math.min(100,avg/10);
       const fillClass=avg<50?'':avg<150?'mid':'slow';
@@ -2129,7 +2129,7 @@ function refreshCurrentLog(){
     document.getElementById('log-last-update').textContent='Last: '+new Date().toLocaleTimeString();
   })
   .catch(()=>{
-    viewer.innerHTML=`<span style="color:var(--err)">⚠ Could not load ${url}\n\nMake sure the file is served as a static file from the dashboard web root.\n\nFor Windows: copy ${LOG_PATHS[src].path} to C:\\DC_Dashboard\\\nor add it to IIS/nginx as a static file.\n\nFor cross-server logs (192.0.2.10): create a PowerShell endpoint that reads and serves the file over HTTP.</span>`;
+    viewer.innerHTML=`<span style="color:var(--err)">⚠ Could not load ${esc(url)}\n\nMake sure the file is served as a static file from the dashboard web root.\n\nFor Windows: copy ${esc(LOG_PATHS[src].path)} to C:\\DC_Dashboard\\\nor add it to IIS/nginx as a static file.\n\nFor cross-server logs (192.0.2.10): create a PowerShell endpoint that reads and serves the file over HTTP.</span>`;
     document.getElementById('log-line-count').textContent=0;
     document.getElementById('log-err-count').textContent=0;
     document.getElementById('log-warn-count').textContent=0;

@@ -7,7 +7,7 @@ async function request(url: string, init: RequestInit = {}) {
     'Content-Type': 'application/json',
   };
   if (token) headers.Authorization = `Bearer ${token}`;
-  const body = init.body ? JSON.stringify(init.body) : undefined;
+  const body = init.body == null ? undefined : typeof init.body === 'string' ? init.body : JSON.stringify(init.body);
   const res = await fetch(`${base}${url.replace(/^\//, '')}`, {
     ...init,
     headers: { ...headers, ...(init.headers || {}) },
