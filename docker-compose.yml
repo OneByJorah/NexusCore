@@ -7,7 +7,7 @@ services:
       - public
       - internal
     healthcheck:
-      test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1/healthz || exit 1"]
+      test: ["CMD-SHELL", "wget --spider -q http://<ip-address>/healthz || exit 1"]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -59,7 +59,7 @@ services:
       - public
       - internal
     healthcheck:
-      test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1/ || exit 1"]
+      test: ["CMD-SHELL", "wget --spider -q http://<ip-address>/ || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -139,7 +139,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
       - GF_USERS_ALLOW_SIGN_UP=false
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:3000/api/health || exit 1"]
+      test: ["CMD-SHELL", "curl -fsS http://<ip-address>:3000/api/health || exit 1"]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -168,8 +168,8 @@ services:
     container_name: jnop-crowdsec
     restart: unless-stopped
     dns:
-      - 8.8.8.8
-      - 1.1.1.1
+      - <ip-address>
+      - <ip-address>
     volumes:
       - crowdsec_data:/var/lib/crowdsec
       - crowdsec_config:/etc/crowdsec
