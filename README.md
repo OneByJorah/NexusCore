@@ -22,6 +22,20 @@
 
 ---
 
+## 📸 Screenshots
+
+| NOC Dashboard | AD Replication | NTP Monitor |
+|---|---|---|
+| ![NOC Dashboard](docs/screenshots/noc-dashboard.png) | ![DC Replication](docs/screenshots/dc-replication.png) | ![NTP Monitor](docs/screenshots/ntp-monitor.png) |
+
+| AI Insights | Wazuh SIEM | Helpdesk |
+|---|---|---|
+| ![AI Insights](docs/screenshots/ai-insights.png) | ![Wazuh SIEM](docs/screenshots/wazuh-siem.png) | ![Helpdesk](docs/screenshots/helpdesk.png) |
+
+More in [docs/screenshots/](docs/screenshots/).
+
+---
+
 ## 📋 Overview
 
 NexusCore is a production-grade **Network Operations Center (NOC)** platform built for enterprise environments. It provides real-time visibility into Active Directory replication health, NTP synchronization, DNS resolution, PBX telephony status, and helpdesk ticket metrics — all through a unified, dark-themed dashboard with AI-powered insights via Ollama/OpenAI integration.
@@ -147,12 +161,17 @@ npm run dev
 
 | Variable | Default | Description |
 |---|---|---|
-| `OPENAI_API_KEY` | — | OpenAI API key for AI-powered insights |
-| `DATABASE_URL` | `sqlite:///./nexuscore.db` | PostgreSQL/SQLite connection string |
-| `AD_DOMAIN_CONTROLLER` | — | Domain controller hostname for monitoring |
-| `NTP_SERVERS` | — | Comma-separated NTP servers to check |
-| `DNS_SERVERS` | — | Comma-separated DNS servers to check |
-| `PBX_HOST` | — | PBX server hostname for status monitoring |
+| `SECRET_KEY` | — | JWT signing key (required) |
+| `DATABASE_URL` | `postgresql+psycopg2://…/jnop` | PostgreSQL connection string |
+| `REDIS_URL` | `redis://redis:6379` | Redis cache URL |
+| `LDAP_URL` | — | LDAP/AD server for domain auth |
+| `MITEL_SNMP_HOST` | `localhost` | PBX host for SNMP health checks |
+| `CHRONY_SERVER` | `localhost` | NTP/Chrony server to monitor |
+| `OLLAMA_HOST` | `http://localhost:11434` | Local LLM endpoint for AI insights |
+| `OSTICKET_BASE_URL` / `OSTICKET_API_KEY` | — | osTicket helpdesk integration |
+| `WAZUH_API_URL` / `WAZUH_USERNAME` / `WAZUH_PASSWORD` | — | Wazuh SIEM connection |
+| `GRAFANA_ADMIN_PASSWORD` | — | Grafana admin password |
+| `TELEGRAM_BOT_TOKEN` / `TEAMS_WEBHOOK` | — | Notification channel tokens |
 
 See `.env.example` for all available options.
 
@@ -195,6 +214,7 @@ NexusCore/
 | Endpoint | Method | Description |
 |---|---|---|
 | `/api/dashboard/overview` | GET | NOC dashboard overview metrics |
+| `/api/system/overview` | GET | Live service-health probes (backend, DB, Redis, collectors) |
 | `/api/dc_status` | GET | AD domain controller replication status |
 | `/api/dc/forcerepl` | POST | Force AD replication request |
 | `/api/ntp_status` | GET | NTP client synchronization health |
@@ -209,6 +229,20 @@ NexusCore/
 
 ---
 
+## 🧪 Testing
+
+See [TESTING.md](TESTING.md). Quick version:
+
+```bash
+# Backend
+cd backend && python -m pytest tests -q
+
+# Frontend build check
+cd frontend && npm install && npm run build
+```
+
+---
+
 ## 🤝 Contributing
 
 Contributions welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community standards.
@@ -217,7 +251,7 @@ All contributions follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## 🔒 Security
 
-Found a vulnerability? Please follow our [Security Policy](SECURITY.md) and report privately to **info@jorahone.com** — do not use public issues.
+Found a vulnerability? Please follow our [Security Policy](SECURITY.md) and report privately to **security@jorahone.com** — do not use public issues.
 
 ---
 
