@@ -1,267 +1,164 @@
 <div align="center">
 
-# ⚡ NexusCore
+![NexusCore banner](docs/assets/banner.svg)
 
-**Enterprise NOC Platform** — Real-time network operations, AD replication monitoring, AI-powered anomaly detection, and SIEM integration.
+# NexusCore
 
-[![License](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
-[![Language](https://img.shields.io/badge/python-3.12%2B-blue)](https://python.org)
-[![React](https://img.shields.io/badge/react-18-61DAFB?logo=react)](https://react.dev)
-[![FastAPI](https://img.shields.io/badge/fastapi-latest-009688?logo=fastapi)](https://fastapi.tiangolo.com)
-[![Docker](https://img.shields.io/badge/docker-compose-2496ED?logo=docker)](https://docker.com)
-[![PostgreSQL](https://img.shields.io/badge/postgres-16-4169E1?logo=postgresql)](https://postgresql.org)
-[![Last Commit](https://img.shields.io/github/last-commit/OneByJorah/NexusCore)](https://github.com/OneByJorah/NexusCore)
+**An enterprise NOC platform — unified monitoring for AD replication, NTP, DNS, PBX, and helpdesk, with AI-powered anomaly detection and SIEM integration.**
+
+<a href="https://github.com/OneByJorah/NexusCore/stargazers"><img src="https://img.shields.io/github/stars/OneByJorah/NexusCore?style=flat-square" alt="Stars"></a>
+<a href="https://github.com/OneByJorah/NexusCore/commits"><img src="https://img.shields.io/github/last-commit/OneByJorah/NexusCore?style=flat-square" alt="Last commit"></a>
+<img src="https://img.shields.io/github/license/OneByJorah/NexusCore?style=flat-square" alt="License">
+<img src="https://img.shields.io/badge/Python-3.12+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.12+">
+<img src="https://img.shields.io/badge/FastAPI-Backend-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
+<img src="https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=white" alt="React 18">
 
 </div>
 
----
+![NexusCore dashboard](docs/assets/screenshot.png)
 
-<p align="center">
-  <img src="screenshot.png" alt="NexusCore Dashboard" width="100%">
-</p>
+## What This Is
 
----
+NexusCore consolidates the core infrastructure signals an enterprise NOC watches — Active Directory replication, NTP synchronization, DNS resolution, PBX telephony health, and helpdesk tickets — into one dark-themed operations dashboard. It adds AI-assisted insights via a local Ollama model, Wazuh SIEM status, and a Prometheus/Grafana/Loki monitoring path.
 
-## 📸 Screenshots
+It is built for infrastructure teams that need a single pane of glass across directory, time, name, voice, and support services, deployed entirely on-premises with Docker Compose.
 
-| NOC Dashboard | AD Replication | NTP Monitor |
-|---|---|---|
-| ![NOC Dashboard](docs/screenshots/noc-dashboard.png) | ![DC Replication](docs/screenshots/dc-replication.png) | ![NTP Monitor](docs/screenshots/ntp-monitor.png) |
-
-| AI Insights | Wazuh SIEM | Helpdesk |
-|---|---|---|
-| ![AI Insights](docs/screenshots/ai-insights.png) | ![Wazuh SIEM](docs/screenshots/wazuh-siem.png) | ![Helpdesk](docs/screenshots/helpdesk.png) |
-
-More in [docs/screenshots/](docs/screenshots/).
-
----
-
-## 📋 Overview
-
-NexusCore is a production-grade **Network Operations Center (NOC)** platform built for enterprise environments. It provides real-time visibility into Active Directory replication health, NTP synchronization, DNS resolution, PBX telephony status, and helpdesk ticket metrics — all through a unified, dark-themed dashboard with AI-powered insights via Ollama/OpenAI integration.
-
-| Capability | Description |
-|---|---|
-| **NOC Dashboard** | Real-time overview of all network operations in a single pane |
-| **AD Replication** | Active Directory health across all domain controllers |
-| **NTP/DNS/PBX** | Service health with automated alerting and status tracking |
-| **Helpdesk** | Ticket metrics, SLA tracking, and status management |
-| **AI Insights** | GPT / Ollama integration for intelligent anomaly detection |
-| **SNMP Discovery** | Automated network device discovery and inventory |
-| **SIEM** | Wazuh integration for security event monitoring |
-
----
-
-## 🏗️ Architecture
-
-```mermaid
-graph TB
-    subgraph Frontend
-        REACT[React 18 + TypeScript]
-        VITE[Vite Dev Server]
-    end
-    
-    subgraph Backend
-        API[FastAPI]
-        ALEMBIC[Alembic Migrations]
-        SQLA[SQLAlchemy ORM]
-    end
-    
-    subgraph Collectors
-        AD[AD/LDAP Collector]
-        NTP[NTP Monitor]
-        DNS[DNS Benchmark]
-        PBX[PBX Monitor]
-        SNMP[SNMP Exporter]
-    end
-    
-    subgraph AI
-        OLLAMA[Ollama Local]
-        OPENAI[OpenAI GPT]
-    end
-    
-    subgraph Storage
-        PG[(PostgreSQL)]
-        REDIS[(Redis)]
-    end
-    
-    subgraph Monitoring
-        PROM[Prometheus]
-        GRAF[Grafana]
-        LOKI[Loki]
-        WAZUH[Wazuh SIEM]
-        CSEC[CrowdSec]
-    end
-    
-    REACT -->|HTTP/REST| API
-    VITE --> REACT
-    API --> SQLA
-    SQLA --> PG
-    API --> REDIS
-    API --> AD & NTP & DNS & PBX
-    SNMP --> PROM
-    PROM --> GRAF
-    LOKI --> GRAF
-    API --- OLLAMA & OPENAI
-    API --- WAZUH
-    CSEC --> NGINX
-    NGINX[nginx] --> REACT & API
-```
-
----
-
-## 🛠️ Tech Stack
-
-**Backend** · `FastAPI` · `Python 3.12+` · `SQLAlchemy` · `Alembic` · `PostgreSQL` · `Redis`
-
-**Frontend** · `React 18` · `TypeScript` · `Vite` · `TailwindCSS` · `Recharts`
-
-**AI/ML** · `OpenAI GPT` · `Ollama` (local LLMs: Llama 3.2, Mistral, Phi3)
-
-**Monitoring** · `Prometheus` · `Grafana` · `Loki` · `SNMP Exporter` · `CrowdSec` · `Wazuh`
-
-**DevOps** · `Docker Compose` · `systemd` · `GitHub Actions CI` · `pre-commit` · `ruff`
-
----
-
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 git clone https://github.com/OneByJorah/NexusCore.git
 cd NexusCore
-
-cp .env.example .env          # Configure your services
-docker compose up -d          # Launch everything
+cp .env.example .env      # set SECRET_KEY, DATABASE_URL, POSTGRES_PASSWORD, REDIS_PASSWORD
+docker compose up -d
 ```
 
-Open **http://localhost:5173** (nginx) in your browser. HTTPS is available on **https://localhost:8443**.
+Open **http://localhost:5173** (nginx). Grafana is on **http://localhost:3000**, Prometheus on **http://localhost:9090**.
 
-> **Note:** the dashboard UI actually served is the standalone HTML/JS app in
-> `frontend/index.html`. The `frontend/src/` React SPA is present but not yet
-> wired into the Vite entry point.
+> [!WARNING]
+> Every secret in `.env.example` is a placeholder. Replace `SECRET_KEY`, `POSTGRES_PASSWORD`, and `REDIS_PASSWORD` before deploying, and do not expose the stack to untrusted networks until they are set.
 
-### Local Development
+## Features
 
-```bash
-# Backend
-cd backend
-pip install -r requirements.txt
-alembic upgrade head
-uvicorn main:app --reload
+- **NOC dashboard** — real-time overview of all monitored services in one pane.
+- **AD replication monitoring** — domain controller status with a force-replication action.
+- **NTP & DNS health** — Chrony sync status, NTP client list, and DNS benchmarking.
+- **PBX telephony** — Mitel PBX service health plus SNMP walk results.
+- **Helpdesk metrics** — osTicket ticket listing and creation.
+- **AI insights** — Ollama (and OpenAI-compatible) endpoints for anomaly triage.
+- **Wazuh SIEM** — agent, alert, and overview queries from the dashboard.
+- **Admin & onboarding** — role, user, tab, and encrypted-settings management plus a first-run setup API.
+- **Observability stack** — Prometheus metrics, Grafana dashboards, Loki logs, CrowdSec, and SNMP exporter.
+- **Migrations** — schema managed exclusively through Alembic.
 
-# Frontend
-cd frontend
-npm install
-npm run dev
+## Architecture
+
+```
+React (Vanilla JS SPA) ──HTTP/REST──▶ FastAPI /api ──▶ PostgreSQL
+                                          │
+                                          ├──▶ Redis (cache)
+                                          ├──▶ Collectors: AD/LDAP · NTP · DNS · PBX
+                                          ├──▶ Ollama / OpenAI (AI insights)
+                                          └──▶ Wazuh SIEM · osTicket
+
+nginx :5173/:8443 ──▶ static dashboard + /api proxy
+Prometheus ◀── /metrics   ·   Grafana ◀── Prometheus + Loki
 ```
 
----
+> [!NOTE]
+> The dashboard UI served is the standalone HTML/JS app in `frontend/index.html`. The `frontend/src/` React SPA is present but not yet wired into the Vite entry point.
 
-## 🔧 Environment Variables
+## Tech Stack
+
+**Backend** — FastAPI, Python 3.12+, SQLAlchemy, Alembic, PostgreSQL 16, Redis
+**Frontend** — React 18, TypeScript, Vite, TailwindCSS, Recharts (standalone `index.html` is the served UI)
+**AI/ML** — Ollama local LLMs, OpenAI-compatible endpoints
+**Monitoring** — Prometheus, Grafana, Loki, SNMP Exporter, CrowdSec, Wazuh
+**DevOps** — Docker Compose, systemd, GitHub Actions, pre-commit, ruff
+
+## Configuration
+
+Copy `.env.example` to `.env`.
 
 | Variable | Default | Description |
-|---|---|---|
-| `SECRET_KEY` | — | JWT signing key (required) |
-| `DATABASE_URL` | `postgresql+psycopg2://…/jnop` | PostgreSQL connection string |
+|----------|---------|-------------|
+| `SECRET_KEY` | — | JWT signing key (**required**) |
+| `DATABASE_URL` | `postgresql://jnop:change-me@postgres:5432/jnop` | PostgreSQL connection string |
 | `REDIS_URL` | `redis://redis:6379` | Redis cache URL |
-| `LDAP_URL` | — | LDAP/AD server for domain auth |
-| `MITEL_SNMP_HOST` | `localhost` | PBX host for SNMP health checks |
-| `CHRONY_SERVER` | `localhost` | NTP/Chrony server to monitor |
-| `OLLAMA_HOST` | `http://localhost:11434` | Local LLM endpoint for AI insights |
-| `OSTICKET_BASE_URL` / `OSTICKET_API_KEY` | — | osTicket helpdesk integration |
-| `WAZUH_API_URL` / `WAZUH_USERNAME` / `WAZUH_PASSWORD` | — | Wazuh SIEM connection |
+| `REDIS_PASSWORD` | — | Redis password |
+| `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB` | `jnop` / — / `jnop` | Postgres credentials |
+| `BACKEND_CORS_ORIGINS` | `http://localhost:5173` | Allowed CORS origins |
 | `GRAFANA_ADMIN_PASSWORD` | — | Grafana admin password |
-| `TELEGRAM_BOT_TOKEN` / `TEAMS_WEBHOOK` | — | Notification channel tokens |
+| `MITEL_SNMP_HOST` / `MITEL_SNMP_COMMUNITY` | `localhost` / `public` | PBX SNMP target |
+| `OSTICKET_BASE_URL` / `OSTICKET_API_KEY` | — | osTicket helpdesk integration |
+| `LDAP_URL` / `LDAP_DOMAIN` / `LDAP_BIND_DN` / `LDAP_BIND_PASSWORD` | — | LDAP/AD binding |
+| `CHRONY_SERVER` | `localhost` | NTP/Chrony server to monitor |
+| `WAZUH_API_URL` / `WAZUH_USERNAME` / `WAZUH_PASSWORD` | — | Wazuh SIEM connection |
+| `OLLAMA_URL` / `OLLAMA_HOST` | `http://localhost:11434` | Local LLM endpoint |
+| `TELEGRAM_BOT_TOKEN` / `TEAMS_WEBHOOK` | — | Notification channels |
 
-See `.env.example` for all available options.
+## API Endpoints
 
----
-
-## 📁 Project Structure
-
-```
-NexusCore/
-├── backend/                      # FastAPI application
-│   ├── app/
-│   │   ├── main.py               # Entry point
-│   │   ├── routers/              # API endpoint modules
-│   │   ├── config.py             # Settings & DB-backed overrides
-│   │   ├── database.py           # SQLAlchemy engine/session
-│   │   ├── encryption.py         # Fernet settings encryption
-│   │   ├── models.py             # SQLAlchemy models
-│   │   └── schemas.py            # Pydantic schemas
-│   └── tests/                    # pytest suite
-├── frontend/                     # Dashboard UI
-│   ├── index.html                # Standalone NOC dashboard (vanilla JS, served UI)
-│   └── src/                      # React SPA sources (not wired into Vite entry yet)
-├── admin-service/                # Admin utilities service
-├── agent/                        # Monitoring agents (Windows)
-├── alembic/                      # Database migrations
-├── monitoring/                   # Prometheus, Loki, SNMP exporter configs
-├── nginx/                        # Reverse proxy configs
-├── docs/                         # Documentation, assets & screenshots
-├── scripts/                      # Utility scripts
-├── database/                     # DB init scripts
-├── systemd/                      # systemd service units
-├── docker-compose.yml            # Production deployment
-└── .env.example                  # Configuration template
-```
-
----
-
-## 📡 API Endpoints
+All application routes are served under `/api` by FastAPI (interactive docs at `/api/docs`).
 
 | Endpoint | Method | Description |
-|---|---|---|
+|----------|--------|-------------|
 | `/api/dashboard/overview` | GET | NOC dashboard overview metrics |
-| `/api/system/overview` | GET | Live service-health probes (backend, DB, Redis, collectors) |
+| `/api/system/overview` | GET | Live service-health probes |
 | `/api/dc_status` | GET | AD domain controller replication status |
-| `/api/dc/forcerepl` | POST | Force AD replication request |
+| `/api/dc/forcerepl` | POST | Force AD replication |
 | `/api/ntp_status` | GET | NTP client synchronization health |
+| `/api/ntp_clients` | GET | NTP client list |
 | `/api/pbx/status` | GET | PBX service health |
 | `/api/pbx/snmp/walk` | GET | Mitel SNMP walk results |
 | `/api/helpdesk/tickets` | GET/POST | Helpdesk ticket metrics (osTicket) |
 | `/api/wazuh/status` | GET | Wazuh SIEM connection status |
-| `/api/ollama/chat` | POST | AI-powered insights (Ollama) |
+| `/api/wazuh/alerts` | GET | Recent Wazuh alerts |
+| `/api/ollama/chat` | POST | AI insights via Ollama |
+| `/api/ollama/status` | GET | Ollama connectivity/models |
 | `/api/admin/users` | GET/POST | User administration (admin role) |
+| `/api/admin/roles` | GET/POST | Role administration |
+| `/api/admin/settings` | GET/PUT | Encrypted settings management |
+| `/api/auth/login` | POST | Obtain a JWT |
 | `/metrics` | GET | Prometheus metrics |
 | `/healthz` | GET | Liveness probe |
 
----
-
-## 🧪 Testing
-
-See [TESTING.md](TESTING.md). Quick version:
+## Testing
 
 ```bash
-# Backend
 cd backend && python -m pytest tests -q
-
-# Frontend build check
 cd frontend && npm install && npm run build
 ```
 
----
+See [TESTING.md](TESTING.md) for details.
 
-## 🤝 Contributing
+## Use Cases
 
-Contributions welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community standards.
+1. **Enterprise NOC** — a single pane across directory, time, name, voice, and support services.
+2. **Infrastructure teams** — correlate AD replication and NTP health before incidents escalate.
+3. **Security operations** — surface Wazuh SIEM status alongside AI anomaly triage.
 
-All contributions follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+## Screenshots
 
-## 🔒 Security
+| NOC Dashboard | AD Replication | AI Insights |
+|---|---|---|
+| ![NOC](docs/screenshots/noc-dashboard.png) | ![Replication](docs/screenshots/dc-replication.png) | ![AI](docs/screenshots/ai-insights.png) |
 
-Found a vulnerability? Please follow our [Security Policy](SECURITY.md) and report privately to **security@jorahone.com** — do not use public issues.
+| NTP Monitor | Wazuh SIEM | Helpdesk |
+|---|---|---|
+| ![NTP](docs/screenshots/ntp-monitor.png) | ![Wazuh](docs/screenshots/wazuh-siem.png) | ![Helpdesk](docs/screenshots/helpdesk.png) |
 
----
+More captures live in [`docs/screenshots/`](docs/screenshots/).
 
-## 📄 License
+## Contributing
 
-[MIT License](LICENSE) © Jhonattan L. Jimenez (OneByJorah)
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). [Open an issue](https://github.com/OneByJorah/NexusCore/issues) to report a bug or request a feature.
 
----
+## License
 
-<p align="center">
-  Built with 🌴 by <a href="https://github.com/OneByJorah">OneByJorah</a> ·
-  <a href="https://jorahone.com">jorahone.com</a>
-</p>
+MIT — see [LICENSE](LICENSE).
+
+## Connect
+
+- [jorahone.com](https://jorahone.com)
+- [GitHub Org](https://github.com/OneByJorah)
+- [info@jorahone.com](mailto:info@jorahone.com)
