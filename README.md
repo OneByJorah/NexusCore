@@ -1,17 +1,19 @@
 <div align="center">
 
-![NexusCore banner](docs/assets/banner.svg)
+![NexusCore](docs/assets/banner.svg)
 
 # NexusCore
 
-**An enterprise NOC platform — unified monitoring for AD replication, NTP, DNS, PBX, and helpdesk, with AI-powered anomaly detection and SIEM integration.**
+**Enterprise NOC platform — unified monitoring for AD replication, NTP, DNS, PBX, and helpdesk, with AI-powered anomaly detection and SIEM integration.**
 
-<a href="https://github.com/OneByJorah/NexusCore/stargazers"><img src="https://img.shields.io/github/stars/OneByJorah/NexusCore?style=flat-square" alt="Stars"></a>
-<a href="https://github.com/OneByJorah/NexusCore/commits"><img src="https://img.shields.io/github/last-commit/OneByJorah/NexusCore?style=flat-square" alt="Last commit"></a>
-<img src="https://img.shields.io/github/license/OneByJorah/NexusCore?style=flat-square" alt="License">
-<img src="https://img.shields.io/badge/Python-3.12+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.12+">
-<img src="https://img.shields.io/badge/FastAPI-Backend-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
-<img src="https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=white" alt="React 18">
+[![GitHub release](https://img.shields.io/github/v/release/OneByJorah/NexusCore?color=00b4d8&label=release&logo=github)](https://github.com/OneByJorah/NexusCore/releases)
+[![PyPI version](https://img.shields.io/pypi/v/j1-noc-platform-backend?color=00b4d8&label=pip&logo=pypi)](https://pypi.org/project/j1-noc-platform-backend/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/ghcr.io/onebyjorah/nexuscore?color=00b4d8&label=docker&logo=docker)](https://ghcr.io/onebyjorah/nexuscore)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?color=FFB300&logo=open-source-initiative&logoColor=FFB300)](https://opensource.org/licenses/MIT)
+[![Python 3.12+](https://img.shields.io/badge/Python-3.12+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.139-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React 18](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=white)](https://react.dev/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com/)
 
 </div>
 
@@ -19,7 +21,7 @@
 
 ## What This Is
 
-NexusCore consolidates the core infrastructure signals an enterprise NOC watches — Active Directory replication, NTP synchronization, DNS resolution, PBX telephony health, and helpdesk tickets — into one dark-themed operations dashboard. It adds AI-assisted insights via a local Ollama model, Wazuh SIEM status, and a Prometheus/Grafana/Loki monitoring path.
+NexusCore consolidates the core infrastructure signals an enterprise NOC watches — Active Directory replication, NTP synchronization, DNS resolution, PBX telephony health, and helpdesk tickets — into one dark-themed operations dashboard with a navy-and-cyan visual identity. It adds AI-assisted insights via a local Ollama model, Wazuh SIEM status, and a Prometheus/Grafana/Loki monitoring path.
 
 It is built for infrastructure teams that need a single pane of glass across directory, time, name, voice, and support services, deployed entirely on-premises with Docker Compose.
 
@@ -36,6 +38,31 @@ Open **http://localhost:5173** (nginx). Grafana is on **http://localhost:3000**,
 
 > [!WARNING]
 > Every secret in `.env.example` is a placeholder. Replace `SECRET_KEY`, `POSTGRES_PASSWORD`, and `REDIS_PASSWORD` before deploying, and do not expose the stack to untrusted networks until they are set.
+
+## Installation
+
+### Docker (recommended)
+
+```bash
+git clone https://github.com/OneByJorah/NexusCore.git
+cd NexusCore
+cp .env.example .env
+docker compose up -d
+```
+
+### pip
+
+```bash
+pip install j1-noc-platform-backend
+```
+
+### From Source
+
+```bash
+git clone https://github.com/OneByJorah/NexusCore.git
+cd NexusCore
+cd backend && pip install -e .
+```
 
 ## Features
 
@@ -54,11 +81,11 @@ Open **http://localhost:5173** (nginx). Grafana is on **http://localhost:3000**,
 
 ```
 React (Vanilla JS SPA) ──HTTP/REST──▶ FastAPI /api ──▶ PostgreSQL
-                                          │
-                                          ├──▶ Redis (cache)
-                                          ├──▶ Collectors: AD/LDAP · NTP · DNS · PBX
-                                          ├──▶ Ollama / OpenAI (AI insights)
-                                          └──▶ Wazuh SIEM · osTicket
+                                       │
+                                       ├──▶ Redis (cache)
+                                       ├──▶ Collectors: AD/LDAP · NTP · DNS · PBX
+                                       ├──▶ Ollama / OpenAI (AI insights)
+                                       └──▶ Wazuh SIEM · osTicket
 
 nginx :5173/:8443 ──▶ static dashboard + /api proxy
 Prometheus ◀── /metrics   ·   Grafana ◀── Prometheus + Loki
@@ -69,11 +96,11 @@ Prometheus ◀── /metrics   ·   Grafana ◀── Prometheus + Loki
 
 ## Tech Stack
 
-**Backend** — FastAPI, Python 3.12+, SQLAlchemy, Alembic, PostgreSQL 16, Redis
-**Frontend** — React 18, TypeScript, Vite, TailwindCSS, Recharts (standalone `index.html` is the served UI)
-**AI/ML** — Ollama local LLMs, OpenAI-compatible endpoints
-**Monitoring** — Prometheus, Grafana, Loki, SNMP Exporter, CrowdSec, Wazuh
-**DevOps** — Docker Compose, systemd, GitHub Actions, pre-commit, ruff
+- **Backend** — FastAPI, Python 3.12+, SQLAlchemy, Alembic, PostgreSQL 16, Redis
+- **Frontend** — React 18, TypeScript, Vite, TailwindCSS, Recharts (standalone `index.html` is the served UI)
+- **AI/ML** — Ollama local LLMs, OpenAI-compatible endpoints
+- **Monitoring** — Prometheus, Grafana, Loki, SNMP Exporter, CrowdSec, Wazuh
+- **DevOps** — Docker Compose, systemd, GitHub Actions, pre-commit, ruff
 
 ## Configuration
 
@@ -82,7 +109,7 @@ Copy `.env.example` to `.env`.
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `SECRET_KEY` | — | JWT signing key (**required**) |
-| `DATABASE_URL` | `postgresql://jnop:change-me@postgres:5432/jnop` | PostgreSQL connection string |
+| `DATABASE_URL` | `postgresql://jnop:***@postgres:5432/jnop` | PostgreSQL connection string |
 | `REDIS_URL` | `redis://redis:6379` | Redis cache URL |
 | `REDIS_PASSWORD` | — | Redis password |
 | `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB` | `jnop` / — / `jnop` | Postgres credentials |
@@ -121,6 +148,13 @@ All application routes are served under `/api` by FastAPI (interactive docs at `
 | `/api/auth/login` | POST | Obtain a JWT |
 | `/metrics` | GET | Prometheus metrics |
 | `/healthz` | GET | Liveness probe |
+
+## Package Badges
+
+[![GitHub release](https://img.shields.io/github/v/release/OneByJorah/NexusCore?color=00b4d8&label=release&logo=github)](https://github.com/OneByJorah/NexusCore/releases)
+[![PyPI version](https://img.shields.io/pypi/v/j1-noc-platform-backend?color=00b4d8&label=pip&logo=pypi)](https://pypi.org/project/j1-noc-platform-backend/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/ghcr.io/onebyjorah/nexuscore?color=00b4d8&label=docker&logo=docker)](https://ghcr.io/onebyjorah/nexuscore)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?color=FFB300&logo=open-source-initiative&logoColor=FFB300)](https://opensource.org/licenses/MIT)
 
 ## Testing
 

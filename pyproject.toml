@@ -1,5 +1,5 @@
 [project]
-name = "j1-noc-platform-backend"
+name = "jorahone-nexuscore"
 version = "11.0.0"
 description = "J1 NOC Platform backend (FastAPI)"
 requires-python = ">=3.12"
