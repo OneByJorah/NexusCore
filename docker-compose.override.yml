@@ -5,8 +5,8 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - frontend_dist:/usr/share/nginx/html:ro
     ports:
-      - "5173:80"
-      - "8443:443"
+      - "127.0.0.1:5173:80"
+      - "127.0.0.1:8443:443"
   frontend:
     image: j1-noc-platform-frontend:latest
     build: {}
