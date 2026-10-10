@@ -48,7 +48,7 @@ def seed_admin():
 
 def get_token() -> str:
     seed_admin()
-    r = client.post("/api/auth/login", data={"username": "admin", "password": "admin"})
+    r = client.post("/api/auth/login", json={"username": "admin", "password": "admin"})
     assert r.status_code == 200
     return r.json()["access_token"]
 
