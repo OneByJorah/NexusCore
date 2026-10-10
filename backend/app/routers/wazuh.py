@@ -3,14 +3,17 @@ import urllib.parse
 from typing import Any
 
 import requests
-from app.config import get_settings
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from app.config import get_settings
-from fastapi import APIRouter, HTTPException
+from ..config import get_settings
+
+# Matches the convention used by every sibling module in app/routers/
+# (admin.py, ai.py, auth.py, ...). The prefix is applied where the router is
+# registered in app/main.py (`app.include_router(wazuh.router, prefix="/api")`).
+router = APIRouter()
 
 
 def _wazuh_config():
