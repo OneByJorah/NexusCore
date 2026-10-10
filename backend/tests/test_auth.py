@@ -54,7 +54,7 @@ def test_health():
 
 def test_login_returns_token():
     seed_admin()
-    r = client.post("/api/auth/login", data={"username": "admin", "password": "admin"})
+    r = client.post("/api/auth/login", json={"username": "admin", "password": "admin"})
     assert r.status_code == 200
     body = r.json()
     assert body["token_type"] == "bearer"

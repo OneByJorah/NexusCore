@@ -1,8 +1,10 @@
 import json
 import pathlib
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
+
+from .auth import User, get_current_user
 
 router = APIRouter()
 BASE = pathlib.Path("/srv/jnop/data")
@@ -35,7 +37,7 @@ def _count_tickets() -> int:
 
 
 @router.get("/dashboard/overview")
-def dashboard_overview():
+def dashboard_overview(_: User = Depends(get_current_user)):
     """Return platform overview metrics for the dashboard home page."""
     dc_status = _load_json("dc_status.json")
     ntp_status = _load_json("ntp_status.json")

@@ -93,8 +93,12 @@ jobs:
           path: sbom-backend.spdx.json
 
       - name: Trivy filesystem + image scan
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.33.1
         with:
+          # trivy-action's default trivy version (v0.65.0) does not exist on the
+          # aquasecurity/trivy releases page, so setup-trivy's installer 404s.
+          # Pin a version that is actually published.
+          version: v0.75.0
           scan-type: "image"
           image-ref: "j1-noc-platform-backend:ci"
           severity: "CRITICAL,HIGH"
