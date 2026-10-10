@@ -58,5 +58,8 @@ def test_overview_with_token():
     r = client.get("/api/dashboard/overview", headers={"Authorization": f"Bearer {token}"})
     assert r.status_code == 200
     data = r.json()
-    assert "clients_online" in data
-    assert "alerts" in data
+    # These key names must match the actual payload (and the frontend, which reads
+    # online_devices / offline_devices / active_alerts in pages/DashboardHome.tsx).
+    # "clients_online" was a stale name from before the overview payload was reshaped.
+    for key in ("online_devices", "offline_devices", "active_alerts", "total_devices"):
+        assert key in data, f"missing {key!r} in dashboard overview payload"
