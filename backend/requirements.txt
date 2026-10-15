@@ -10,7 +10,7 @@ pydantic-settings==2.7.1
 python-dotenv==1.2.2
 python-jose[cryptography]==3.5.0  # 3.4.0 caps pyasn1<0.5.0 (vulnerable; and 'crypthentication' was a typo - the extra never applied)
 passlib[bcrypt]==1.7.4
-prometheus-client==0.25.0
+prometheus-client==0.26.0
 httpx==0.28.1
 requests==2.34.2
 email-validator==2.2.0
