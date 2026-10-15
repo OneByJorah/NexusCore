@@ -6,7 +6,7 @@ alembic==1.18.5
 psycopg2-binary==2.9.9
 redis==5.0.8
 pydantic==2.10.6
-pydantic-settings==2.7.1
+pydantic-settings==2.14.2
 python-dotenv==1.2.2
 python-jose[cryptography]==3.5.0  # 3.4.0 caps pyasn1<0.5.0 (vulnerable; and 'crypthentication' was a typo - the extra never applied)
 passlib[bcrypt]==1.7.4
